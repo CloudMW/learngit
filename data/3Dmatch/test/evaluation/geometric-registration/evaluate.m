@@ -4,11 +4,11 @@
 % http://redwood-data.org/indoor/regbasic.html
 % https://github.com/qianyizh/ElasticReconstruction/tree/master/Matlab_Toolbox
 
-descriptorName = 'FCGF_overlap_pretrain_ransac_250_voexl_0.050'; % 3dmatch, spin, fpfh
+descriptorName = 'est'; % 3dmatch, spin, fpfh
 
 % Locations of evaluation files
-dataPath = '../../data/fragments';
-
+resultDataPath = '../../result/Predator_est_traj/3DMatch_5000_prob/';
+gtDataPath='../../gt/';
 % % Synthetic data benchmark
 % sceneList = {'iclnuim-livingroom1-evaluation' ...
 %              'iclnuim-livingroom2-evaluation' ...
@@ -31,12 +31,12 @@ addpath(genpath('external'));
 % Compute precision and recall
 totalRecall = []; totalPrecision = [];
 for sceneIdx = 1:length(sceneList)
-    scenePath = fullfile(dataPath,sceneList{sceneIdx});
-    
+    gtScenePath = fullfile(gtDataPath,sceneList{sceneIdx});
+    resultScenePath=fullfile(resultDataPath,strrep(sceneList{sceneIdx}, '-evaluation', ''));
     % Compute registration error
-    gt = mrLoadLog(fullfile(scenePath,'gt.log'));
-    gt_info = mrLoadInfo(fullfile(scenePath,'gt.info'));
-    result = mrLoadLog(fullfile(scenePath,sprintf('%s.log',descriptorName)));
+    gt = mrLoadLog(fullfile(gtScenePath,'gt.log'));
+    gt_info = mrLoadInfo(fullfile(gtScenePath,'gt.info'));
+    result = mrLoadLog(fullfile(resultScenePath,sprintf('%s.log',descriptorName)));
     if isempty(result)  
         recall = 0;  
         precision = 0;
@@ -44,7 +44,7 @@ for sceneIdx = 1:length(sceneList)
     [recall,precision] = mrEvaluateRegistration(result,gt,gt_info);
     totalRecall = [totalRecall;recall];
     totalPrecision = [totalPrecision;precision];
-    fullfile(scenePath,sprintf('%s.log',descriptorName))
+    fullfile(resultScenePath,sprintf('%s.log',descriptorName))
     [recall,precision]
 end
 fprintf('Mean registration recall: %f precision: %f\n',mean(totalRecall),mean(totalPrecision));
