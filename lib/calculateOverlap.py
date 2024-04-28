@@ -7,7 +7,7 @@ import tqdm
 from tqdm import tqdm
 
 
-def calculateOverlap(source, target,sourceTrans,targetTrans,threshold=0.03):
+def calculateOverlap(source, target,sourceTrans,targetTrans,threshold=0.0375):
     source=source.voxel_down_sample(0.01)
     target=target.voxel_down_sample(0.01)
     source=source.transform(sourceTrans)
